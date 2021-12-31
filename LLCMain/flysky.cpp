@@ -1,8 +1,12 @@
 #include "flysky.h"
 #include <Arduino.h>
-int chlist[] = {CH2,CH3,CH4, CH5, CH6, CH7, CH8, CH9};
-int readChannel(int channelInput, int minLimit, int maxLimit, int defaultValue) {
-  int ch = pulseIn(channelInput, HIGH, 30000);
+#include <IBusBM.h>
+IBusBM ibusRc;
+
+HardwareSerial& ibusRcSerial = Serial2;
+
+int readChannel(byte channelInput, int minLimit, int maxLimit, int defaultValue) {
+  uint16_t ch = ibusRc.readChannel(channelInput);
   if (ch < 100) return defaultValue;
   return map(ch, 1000, 2000, minLimit, maxLimit);
 }
@@ -15,23 +19,27 @@ bool redSwitch(byte channelInput, bool defaultValue) {
 }
 
 void printChannels(int chout[]) {
-  for (int i = 0; i < ARRAY_SIZE; i++) {
-    //Serial.print(i);
-    chout[i] = readChannel(chlist[i], 1000, 2000, 0);
-    if (i == ARRAY_SIZE - 1) {
-      Serial.print("  CH" + String(i + 1) + ":  ");
-      Serial.println(chout[i]);
+
+  for (byte i = 0; i < 10; i++) {
+    chout[i] = readChannel(i, -100, 100, 0);
+    if (i !=9) {
+      Serial.print("Ch");
+      Serial.print(i + 1);
+      Serial.print(": ");
+      Serial.print(chout[i]);
+      Serial.print(" ");
     }
     else {
-      Serial.print("  CH" + String(i + 1) + ":  ");
+      Serial.print("Ch");
+      Serial.print(i + 1);
+      Serial.print(": ");
       Serial.print(chout[i]);
+      Serial.println(" ");
     }
   }
 }
-void initializeRC(){
+void initializeRC() {
   Serial.println("Initializing...");
-  for (int i = 0; i < ARRAY_SIZE; i++) {
-    pinMode(chlist[i], INPUT);
-  }
+  ibusRc.begin(ibusRcSerial);
   Serial.println("Initialized!");
 }
