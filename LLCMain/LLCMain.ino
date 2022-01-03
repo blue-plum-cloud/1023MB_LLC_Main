@@ -11,7 +11,7 @@
 //HCSR04 sensor1(ECHO_PIN,TRIG_PIN);
 //IRLINE sensor2(ECHO_PIN);
 
-int chout[ARRAY_SIZE];
+int chout[10];
 void setup() {
   Serial.begin(9600);
   initializeRC();
