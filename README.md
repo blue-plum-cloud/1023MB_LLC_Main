@@ -1,5 +1,7 @@
 # 1023MB_LLC_Main
- good stuff
+<a href=".github/workflows/main.yml" ><img src="https://img.shields.io/github/workflow/status/blue-plum-cloud/1023MB_LLC_Main/Arduino-CI?label=Build&logo=arduino&style=flat-square"/></a>
+
+good stuff
 
 <h1>Pre-Setup</h1>
 <h3>
