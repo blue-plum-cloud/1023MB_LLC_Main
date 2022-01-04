@@ -14,4 +14,5 @@ class Motor
     int _motorPin1;
     int _motorPin2;
 };
+void manualMovement(int channel2, int channel1, Motor motorLF, Motor motorRF, Motor motorLR, Motor motorRR);
 #endif

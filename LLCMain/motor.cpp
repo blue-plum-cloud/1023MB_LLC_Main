@@ -27,3 +27,46 @@ void Motor::stop_rotate() {
   digitalWrite( _motorPin1, HIGH);
   digitalWrite( _motorPin2, HIGH);
 }
+
+//might want to consider some kind of deadzone for the controller for this movement
+void manualMovement(int channel2, int channel1, Motor motorLF, Motor motorRF, Motor motorLR, Motor motorRR) { //channel2 is left U/D, channel 1 is right L/R
+  int turningMultiplier = 0.5; //how responsive should the turning be?
+  if (channel2 == 0 && channel1 != 0) { //rotate on spot
+    Serial.println("Rotating!");
+    motorLF.rotate(channel1);
+    motorRF.rotate(-channel1);
+    motorLR.rotate(channel1);
+    motorRR.rotate(-channel1);
+  }
+  else if (channel1 == 0 && channel2 != 0) { //move forward/backward straight
+    Serial.println("Moving Straight!");
+    motorLF.rotate(channel2);
+    motorRF.rotate(channel2);
+    motorLR.rotate(channel2);
+    motorRR.rotate(channel2);
+  }
+  else if (channel1 != 0 && channel2 != 0) { //some kind of diagonal movement
+    int turningSpeed = channel2 * turningMultiplier;
+    if (channel1 < 0) { //going left
+      Serial.println("Turning Left!");
+      motorLF.rotate(turningSpeed);
+      motorRF.rotate(channel2);
+      motorLR.rotate(turningSpeed);
+      motorRR.rotate(channel2);
+    }
+    else {
+      Serial.println("Turning Right!");
+      motorRF.rotate(turningSpeed);
+      motorLF.rotate(channel2);
+      motorRR.rotate(turningSpeed);
+      motorLR.rotate(channel2);
+    }
+  }
+  else {
+    Serial.println("Stopped!");
+    motorLF.stop_rotate();
+    motorRF.stop_rotate();
+    motorLR.stop_rotate();
+    motorRR.stop_rotate();
+  }
+}

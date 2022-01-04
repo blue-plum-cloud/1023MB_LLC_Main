@@ -18,7 +18,7 @@ CH10: Key2
  
 
 int readChannel(int channelInput, int minLimit, int maxLimit, int defaultValue);
-bool redSwitch(byte channelInput, bool defaultValue);
+bool readSwitch(byte channelInput, bool defaultValue);
 void printChannels(int chout[]);
 void initializeRC();
 
