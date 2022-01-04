@@ -3,13 +3,17 @@
 
 good stuff
 
-<h1>Pre-Setup</h1>
-<h3>
-<h2>Install Libraries</h2>
+# Prerequisites
 
-1. Go to "Manage Libraries" in the Arduino IDE, and download <strong>iBusBM and ESP32 AnalogWrite</strong>.
+## Install Libraries
 
-<h2>Set Up ESP32</h2>
+1. Go to "Manage Libraries" in the Arduino IDE, and download the following libraries:
+- [iBusBM](https://github.com/bmellink/IBusBM)
+- [Arduino_APDS9960](https://github.com/1487quantum/Arduino_APDS9960/), `ESP32` branch
+
+> **Note:** There is a slight modification that is required for the ESP32 to compile the APDS9960 library, comment out the `wire.end();` of `void APDS9960::end()` inside `src/Arduino_APDS9960.cpp`. Alternatively, refer [here](https://github.com/1487quantum/Arduino_APDS9960/blob/esp32/src/Arduino_APDS9960.cpp#L80).
+
+## Set Up ESP32
 
 1. To set up the ESP32, go to File -> Preferences and paste (https://dl.espressif.com/dl/package_esp32_index.json) in "Additional Board Managers URLs".
 
@@ -19,8 +23,8 @@ good stuff
 4. Install the driver.
 
 
-<h2>Compile Sketch</h2>
+## Compile Sketch
 
-1. Open <code>LLCMain.ino</code> (the main sketch) in Arduino IDE. It will open the main sketch and the other libraries used.
+1. Open `LLCMain.ino` (the main sketch) in Arduino IDE. It will open the main sketch and the other libraries used.
 
 2. Compile and upload <code>LLCMain.ino</code> onto the ESP32. Ensure that pre-setup has already been completed before you start this step.

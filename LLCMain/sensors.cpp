@@ -1,6 +1,8 @@
 #include "Arduino.h"
 #include "sensors.h"
 
+// Ultrasonic Sensor
+
 HCSR04::HCSR04(int echoPin, int trigPin) {
   pinMode(echoPin, INPUT);
   pinMode(trigPin, OUTPUT);
@@ -24,12 +26,50 @@ int HCSR04::read_distance() {
   return distance;
 }
 
-IRLINE::IRLINE(int inputPin){
+// IR Line Sensor
+
+IRLINE::IRLINE(int inputPin) {
   pinMode(inputPin, INPUT);
   _inputPin = inputPin;
 }
 
-boolean IRLINE::check_line(){
+boolean IRLINE::check_line() {
   boolean val = digitalRead(_inputPin);
-  return val; 
+  return val;
+}
+
+// Color Sensor
+
+CLRSENS::CLRSENS(uint8_t intPin)  :
+  CLRSENS(intPin, _offset_clr) {
+}
+
+CLRSENS::CLRSENS(uint8_t intPin, color offset_clr) :
+  _offset_clr(offset_clr),
+  _I2CCLR(0),
+  _clr_sens(_I2CCLR, intPin)
+{
+}
+
+bool CLRSENS::startColor() {
+  return _clr_sens.begin();
+}
+
+CLRSENS::color CLRSENS::getColor() {
+  if (_clr_sens.colorAvailable()) {
+    _prev_color_val = _color_val;
+    _clr_sens.readColor(_color_val.r, _color_val.g, _color_val.b);
+    _color_val.r -= _offset_clr.r;      // Offset vals
+    _color_val.g -= _offset_clr.g;
+    _color_val.b -= _offset_clr.b;
+  }
+  return _color_val;
+}
+
+CLRSENS::color CLRSENS::getOffset() {
+  return _offset_clr;
+}
+
+CLRSENS::color CLRSENS::setOffset(color offset_clr) {
+  _offset_clr = offset_clr;
 }

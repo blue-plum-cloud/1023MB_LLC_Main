@@ -17,9 +17,12 @@
 #define ENABLEBR 19
 
 //define sensor pins
+// Ultrasonic Sensor
 #define ECHO_PIN 2
-#define  TRIG_PIN 3
+#define TRIG_PIN 3
 
+// Color Sensor
+#define INT_COLOR 4   // Interrupt pin
 
 //Instantiating objects will also set up the pins for the component.
 Motor motorLF(ENABLEAF, MOTORPIN1_LF, MOTORPIN2_LF, true);
@@ -29,10 +32,19 @@ Motor motorRR(ENABLEBR, MOTORPIN1_RR, MOTORPIN2_RR, true);
 //HCSR04 sensor1(ECHO_PIN,TRIG_PIN);
 //IRLINE sensor2(ECHO_PIN);
 
+// COlor sensor
+CLRSENS::color colorVal = { -1, -1, -1};
+bool colorStarted{false};
+
+CLRSENS colorSen(INT_COLOR);
+
 int chout[10];
 void setup() {
   Serial.begin(9600);
   initializeRC();
+  colorStarted = colorSen.startColor();
+  if (!colorStarted)
+    Serial.println("Error start color sensor...");
 }
 
 void loop() { //test for now
@@ -44,7 +56,7 @@ void loop() { //test for now
   else if (chout[5] == 0) {
     //manual mode (MIDDLE)
     //use channel 2 for forward/backward and channel 1 for left/right
-    manualMovement(chout[1], chout[0], motorLF, motorRF, motorLR, motorRR); 
+    manualMovement(chout[1], chout[0], motorLF, motorRF, motorLR, motorRR);
   }
   else if (chout[5] == 255) {
     //auto mode (DOWN)
@@ -57,6 +69,17 @@ void loop() { //test for now
   //  Serial.print("Line: ");
   //  Serial.println(check);
   //  delay(50);
+
+  if (colorStarted) {
+    colorVal  = colorSen.getColor();
+    Serial.print("R:");
+    Serial.print(colorVal.r);
+    Serial.print("\tG:");
+    Serial.print(colorVal.g);
+    Serial.print("\tB:");
+    Serial.println(colorVal.b);
+  }
+
   delay(50);
 }
 
