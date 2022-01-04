@@ -1,40 +1,21 @@
+#include "config.h"
 #include "flysky.h"
 #include "motor.h"
 #include "sensors.h"
-
-//define motor pins
-#define MOTORPIN1_LF 32
-#define MOTORPIN2_LF 33
-#define ENABLEAF 25
-#define MOTORPIN1_RF 26
-#define MOTORPIN2_RF 27
-#define ENABLEBF 14
-#define MOTORPIN1_LR 12
-#define MOTORPIN2_LR 13
-#define ENABLEAR 23
-#define MOTORPIN1_RR 22
-#define MOTORPIN2_RR 21
-#define ENABLEBR 19
-
-//define sensor pins
-// Ultrasonic Sensor
-#define ECHO_PIN 2
-#define TRIG_PIN 3
-
-// Color Sensor
-#define INT_COLOR 4   // Interrupt pin
 
 //Instantiating objects will also set up the pins for the component.
 Motor motorLF(ENABLEAF, MOTORPIN1_LF, MOTORPIN2_LF, true);
 Motor motorRF(ENABLEBF, MOTORPIN1_RF, MOTORPIN2_RF, true);
 Motor motorLR(ENABLEAR, MOTORPIN1_LR, MOTORPIN2_LR, true);
 Motor motorRR(ENABLEBR, MOTORPIN1_RR, MOTORPIN2_RR, true);
+
+// === Sensors ===
 //HCSR04 sensor1(ECHO_PIN,TRIG_PIN);
 //IRLINE sensor2(ECHO_PIN);
 
-// COlor sensor
-CLRSENS::color colorVal = { -1, -1, -1};
+// Color sensor
 bool colorStarted{false};
+CLRSENS::color colorVal = { -1, -1, -1};
 
 CLRSENS colorSen(INT_COLOR);
 
@@ -44,7 +25,7 @@ void setup() {
   initializeRC();
   colorStarted = colorSen.startColor();
   if (!colorStarted)
-    Serial.println("Error start color sensor...");
+    Serial.println("Error starting color sensor...");
 }
 
 void loop() { //test for now
