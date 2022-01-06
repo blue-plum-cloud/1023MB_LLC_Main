@@ -13,6 +13,10 @@
 #define MOTORPIN2_RR 21
 #define ENABLEBR 19
 
+#define servoLpin 15
+#define servoRpin 2
+int minUs = 1000;
+int maxUs = 2000;
 // ----- Sensors -----
 // Ultrasonic Sensor
 #define ECHO_PIN 2

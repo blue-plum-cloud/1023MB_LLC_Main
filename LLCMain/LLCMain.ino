@@ -2,12 +2,16 @@
 #include "flysky.h"
 #include "motor.h"
 #include "sensors.h"
+#include <ESP32Servo.h>
 
 //Instantiating objects will also set up the pins for the component.
 Motor motorLF(ENABLEAF, MOTORPIN1_LF, MOTORPIN2_LF, true);
 Motor motorRF(ENABLEBF, MOTORPIN1_RF, MOTORPIN2_RF, true);
 Motor motorLR(ENABLEAR, MOTORPIN1_LR, MOTORPIN2_LR, true);
 Motor motorRR(ENABLEBR, MOTORPIN1_RR, MOTORPIN2_RR, true);
+
+Servo servoL;
+Servo servoR;
 
 // === Sensors ===
 //HCSR04 sensor1(ECHO_PIN,TRIG_PIN);
@@ -23,6 +27,8 @@ int chout[10];
 void setup() {
   Serial.begin(9600);
   initializeRC();
+  servoL.attach(servoLpin, minUs, maxUs);
+  servoR.attach(servoRpin, minUs, maxUs);
   colorStarted = colorSen.startColor();
   if (!colorStarted)
     Serial.println("Error starting color sensor...");
@@ -41,6 +47,7 @@ void loop() { //test for now
   }
   else if (chout[5] == 255) {
     //auto mode (DOWN)
+    servoMove();
   }
   //  int spd = map(chout[0], 1000, 2000, -255, 255);
   //  spd = constrain(spd, -255,255);
@@ -65,45 +72,24 @@ void loop() { //test for now
 }
 
 
-////might want to consider some kind of deadzone for the controller for this movement
-//void manualMovement(int channel2, int channel1,) { //channel2 is left U/D, channel 1 is right L/R
-//  int turningMultiplier = 0.5; //how responsive should the turning be?
-//  if (channel2 == 0 && channel1 != 0) { //rotate on spot
-//    Serial.println("Rotating!");
-//    motorLF.rotate(channel1);
-//    motorRF.rotate(-channel1);
-//    motorLR.rotate(channel1);
-//    motorRR.rotate(-channel1);
-//  }
-//  else if (channel1 == 0 && channel2 != 0) { //move forward/backward straight
-//    Serial.println("Moving Straight!");
-//    motorLF.rotate(channel2);
-//    motorRF.rotate(channel2);
-//    motorLR.rotate(channel2);
-//    motorRR.rotate(channel2);
-//  }
-//  else if (channel1 != 0 && channel2 != 0) { //some kind of diagonal movement
-//    int turningSpeed = channel2 * turningMultiplier;
-//    if (channel1 < 0) { //going left
-//      Serial.println("Turning Left!");
-//      motorLF.rotate(turningSpeed);
-//      motorRF.rotate(channel2);
-//      motorLR.rotate(turningSpeed);
-//      motorRR.rotate(channel2);
-//    }
-//    else {
-//      Serial.println("Turning Right!");
-//      motorRF.rotate(turningSpeed);
-//      motorLF.rotate(channel2);
-//      motorRR.rotate(turningSpeed);
-//      motorLR.rotate(channel2);
-//    }
-//  }
-//  else {
-//    Serial.println("Stopped!");
-//    motorLF.stop_rotate();
-//    motorRF.stop_rotate();
-//    motorLR.stop_rotate();
-//    motorRR.stop_rotate();
-//  }
-//}
+void servoMove(){
+    for (int pos = 0; pos <= 180; pos += 1) { // sweep from 0 degrees to 180 degrees
+    // in steps of 1 degree
+    servoL.write(pos);
+    delay(1);             // waits 20ms for the servo to reach the position
+  }
+  for (int pos = 180; pos >= 0; pos -= 1) { // sweep from 180 degrees to 0 degrees
+    servoL.write(pos);
+    delay(1);
+  }
+
+  for (int pos = 0; pos <= 180; pos += 1) { // sweep from 0 degrees to 180 degrees
+    // in steps of 1 degree
+    servoR.write(pos);
+    delay(1);             // waits 20ms for the servo to reach the position
+  }
+  for (int pos = 180; pos >= 0; pos -= 1) { // sweep from 180 degrees to 0 degrees
+    servoR.write(pos);
+    delay(1);
+  }
+}
