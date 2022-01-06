@@ -12,7 +12,8 @@ Motor motorRR(ENABLEBR, MOTORPIN1_RR, MOTORPIN2_RR, true);
 
 Servo servoL;
 Servo servoR;
-
+int counterL = 0;
+int counterR = 0;
 // === Sensors ===
 //HCSR04 sensor1(ECHO_PIN,TRIG_PIN);
 //IRLINE sensor2(ECHO_PIN);
@@ -24,7 +25,12 @@ CLRSENS::color colorVal = { -1, -1, -1};
 CLRSENS colorSen(INT_COLOR);
 
 int chout[10];
+
 void setup() {
+  ESP32PWM::allocateTimer(0);
+  ESP32PWM::allocateTimer(1);
+  ESP32PWM::allocateTimer(2);
+  ESP32PWM::allocateTimer(3);
   Serial.begin(9600);
   initializeRC();
   servoL.attach(servoLpin, minUs, maxUs);
@@ -39,15 +45,20 @@ void loop() { //test for now
   if (chout[5] == -255) { //check channel 6
     //emergency stop (UP)
     manualMovement(0, 0, motorLF, motorRF, motorLR, motorRR);
+    countVar(chout[6]);
+    servoMove(counterL);
   }
   else if (chout[5] == 0) {
     //manual mode (MIDDLE)
     //use channel 2 for forward/backward and channel 1 for left/right
     manualMovement(chout[1], chout[0], motorLF, motorRF, motorLR, motorRR);
+    countVar(chout[6]);
+    servoMove(counterL);
   }
   else if (chout[5] == 255) {
     //auto mode (DOWN)
-    servoMove();
+    countVar(chout[6]);
+    servoMove(counterL);
   }
   //  int spd = map(chout[0], 1000, 2000, -255, 255);
   //  spd = constrain(spd, -255,255);
@@ -72,24 +83,54 @@ void loop() { //test for now
 }
 
 
-void servoMove(){
-    for (int pos = 0; pos <= 180; pos += 1) { // sweep from 0 degrees to 180 degrees
-    // in steps of 1 degree
-    servoL.write(pos);
-    delay(1);             // waits 20ms for the servo to reach the position
-  }
-  for (int pos = 180; pos >= 0; pos -= 1) { // sweep from 180 degrees to 0 degrees
-    servoL.write(pos);
-    delay(1);
-  }
+int currentPos = 0;
+int currentTime = 0;
+int prevTime = 0;
 
-  for (int pos = 0; pos <= 180; pos += 1) { // sweep from 0 degrees to 180 degrees
-    // in steps of 1 degree
-    servoR.write(pos);
-    delay(1);             // waits 20ms for the servo to reach the position
+void countVar(int channel7) {
+  if (channel7 == 255) {
+    //    if (millis() - prevTime >= 1) {
+    //      counterL++;
+    //      counterL = constrain(counterL, 0, 180);
+    //      prevTime = millis();
+    //    }
+    counterL += 5;
+    counterL = constrain(counterL, 0, 180);
+    counterR = 180 - counterL;
   }
-  for (int pos = 180; pos >= 0; pos -= 1) { // sweep from 180 degrees to 0 degrees
-    servoR.write(pos);
-    delay(1);
+  else if (channel7 == -255) {
+    //    if (millis() - prevTime >= 1) {
+    //      counterL--;
+    //      counterL = constrain(counterL, 0, 180);
+    //      prevTime = millis();
+    //    }
+    counterL -= 5;
+    counterL = constrain(counterL, 0, 180);
+    counterR = 180 - counterL;
   }
+  Serial.println(counterL);
+  //  prevTime = currentTime;
+}
+void servoMove(int counter) {
+  //int pos2 = 180;
+  if (currentPos < counterL) {
+    for (int pos = currentPos; pos <= counterL; pos += 1) { // sweep from 0 degrees to 180 degrees
+      // in steps of 1 degree
+      servoL.write(pos);
+      servoR.write(180-pos);
+      //pos2--;
+      delay(1);             // waits 20ms for the servo to reach the position
+    }
+  }
+  else if (currentPos > counterL) {
+    for (int pos = currentPos; pos >= counterL; pos -= 1) { // sweep from 0 degrees to 180 degrees
+      // in steps of 1 degree
+      servoL.write(pos);
+      servoR.write(180-pos);
+      //pos2--;
+      delay(1);             // waits 20ms for the servo to reach the position
+    }
+  }
+  currentPos = counterL;
+
 }
