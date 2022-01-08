@@ -1,7 +1,7 @@
 #ifndef Motor_h
 #define Motor_h
 #include "Arduino.h"
-
+#include <ESP32Servo.h>
 class Motor
 {
   public:
@@ -14,5 +14,7 @@ class Motor
     int _motorPin1;
     int _motorPin2;
 };
-void manualMovement(int channel2, int channel1, Motor motorLF, Motor motorRF, Motor motorLR, Motor motorRR);
+void manualMovement(int channel2, int channel1, Motor motorLF, Motor motorRF);
+int servoMove(int counter, int currentPos, Servo servoL, Servo servoR);
+int countVar(int channel7, int counter);
 #endif

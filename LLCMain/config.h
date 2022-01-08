@@ -6,12 +6,6 @@
 #define MOTORPIN1_RF 26
 #define MOTORPIN2_RF 27
 #define ENABLEBF 14
-#define MOTORPIN1_LR 12
-#define MOTORPIN2_LR 13
-#define ENABLEAR 23
-#define MOTORPIN1_RR 22
-#define MOTORPIN2_RR 21
-#define ENABLEBR 19
 
 #define servoLpin 15
 #define servoRpin 2
