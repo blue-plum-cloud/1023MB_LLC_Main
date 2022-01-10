@@ -11,8 +11,12 @@ Motor motorRF(ENABLEBF, MOTORPIN1_RF, MOTORPIN2_RF, true);
 Servo servoL;
 Servo servoR;
 <<<<<<< HEAD
+<<<<<<< HEAD
 int counterL = 0;
 int currentPos = 0;
+=======
+
+>>>>>>> parent of 145a9b3 (servo motor code, removed internal analogwrite lib)
 =======
 
 >>>>>>> parent of 145a9b3 (servo motor code, removed internal analogwrite lib)
@@ -45,6 +49,9 @@ void loop() { //test for now
     manualMovement(0, 0, motorLF, motorRF);
 =======
     manualMovement(0, 0, motorLF, motorRF, motorLR, motorRR);
+<<<<<<< HEAD
+>>>>>>> parent of 145a9b3 (servo motor code, removed internal analogwrite lib)
+=======
 >>>>>>> parent of 145a9b3 (servo motor code, removed internal analogwrite lib)
   }
   else if (chout[5] == 0) {
@@ -63,6 +70,9 @@ void loop() { //test for now
   else if (chout[5] == 255) {
     //auto mode (DOWN)
     servoMove();
+<<<<<<< HEAD
+>>>>>>> parent of 145a9b3 (servo motor code, removed internal analogwrite lib)
+=======
 >>>>>>> parent of 145a9b3 (servo motor code, removed internal analogwrite lib)
   }
   //  int spd = map(chout[0], 1000, 2000, -255, 255);
@@ -88,6 +98,7 @@ void loop() { //test for now
 }
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 //int currentPos = 0;
 //int currentTime = 0;
@@ -138,6 +149,8 @@ void loop() { //test for now
 //
 //}
 =======
+=======
+>>>>>>> parent of 145a9b3 (servo motor code, removed internal analogwrite lib)
 void servoMove(){
     for (int pos = 0; pos <= 180; pos += 1) { // sweep from 0 degrees to 180 degrees
     // in steps of 1 degree
