@@ -9,8 +9,8 @@
 
 #define servoLpin 15
 #define servoRpin 2
-int minUs = 500;
-int maxUs = 2500;
+int minUs = 1000;
+int maxUs = 2000;
 // ----- Sensors -----
 // Ultrasonic Sensor
 #define ECHO_PIN 2
