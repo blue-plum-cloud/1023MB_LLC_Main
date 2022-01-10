@@ -64,49 +64,49 @@ void manualMovement(int channel2, int channel1, Motor motorLF, Motor motorRF) { 
 }
 
 
-int countVar(int channel7, int counter) { //counts how long var is scrolled
-  if (channel7 == 255) {
-    //    if (millis() - prevTime >= 1) {
-    //      counterL++;
-    //      counterL = constrain(counterL, 0, 180);
-    //      prevTime = millis();
-    //    } //don't really need this as the ESP32 doesn't count that fast
-    counter += 5;
-    counter = constrain(counter, 0, 180);
-  }
-  else if (channel7 == -255) {
-    //    if (millis() - prevTime >= 1) {
-    //      counterL--;
-    //      counterL = constrain(counterL, 0, 180);
-    //      prevTime = millis();
-    //    } 
-    counter -= 5;
-    counter = constrain(counter, 0, 180);
-  }
-  //  prevTime = currentTime;
-  return counter;
-}
-int servoMove(int counter, int currentPos, Servo servoL, Servo servoR) {
-  //int pos2 = 180;
-  if (currentPos < counter) {
-    for (int pos = currentPos; pos <= counter; pos += 1) { // sweep from 0 degrees to 180 degrees
-      // in steps of 1 degree
-      servoL.write(pos);
-      servoR.write(180-pos);
-      //pos2--;
-      delay(1);             // waits 20ms for the servo to reach the position
-    }
-  }
-  else if (currentPos > counter) {
-    for (int pos = currentPos; pos >= counter; pos -= 1) { // sweep from 0 degrees to 180 degrees
-      // in steps of 1 degree
-      servoL.write(pos);
-      servoR.write(180-pos);
-      //pos2--;
-      delay(1);             // waits 20ms for the servo to reach the position
-    }
-  }
-  currentPos = counter;
-  return currentPos;
-
-}
+//int countVar(int channel7, int counter) { //counts how long var is scrolled
+//  if (channel7 == 255) {
+//    //    if (millis() - prevTime >= 1) {
+//    //      counterL++;
+//    //      counterL = constrain(counterL, 0, 180);
+//    //      prevTime = millis();
+//    //    } //don't really need this as the ESP32 doesn't count that fast
+//    counter += 5;
+//    counter = constrain(counter, 0, 180);
+//  }
+//  else if (channel7 == -255) {
+//    //    if (millis() - prevTime >= 1) {
+//    //      counterL--;
+//    //      counterL = constrain(counterL, 0, 180);
+//    //      prevTime = millis();
+//    //    } 
+//    counter -= 5;
+//    counter = constrain(counter, 0, 180);
+//  }
+//  //  prevTime = currentTime;
+//  return counter;
+//}
+//int servoMove(int counter, int currentPos, Servo servoL, Servo servoR) {
+//  //int pos2 = 180;
+//  if (currentPos < counter) {
+//    for (int pos = currentPos; pos <= counter; pos += 1) { // sweep from 0 degrees to 180 degrees
+//      // in steps of 1 degree
+//      servoL.write(pos);
+//      servoR.write(180-pos);
+//      //pos2--;
+//      delay(1);             // waits 20ms for the servo to reach the position
+//    }
+//  }
+//  else if (currentPos > counter) {
+//    for (int pos = currentPos; pos >= counter; pos -= 1) { // sweep from 0 degrees to 180 degrees
+//      // in steps of 1 degree
+//      servoL.write(pos);
+//      servoR.write(180-pos);
+//      //pos2--;
+//      delay(1);             // waits 20ms for the servo to reach the position
+//    }
+//  }
+//  currentPos = counter;
+//  return currentPos;
+//
+//}

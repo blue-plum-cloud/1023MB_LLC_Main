@@ -15,6 +15,6 @@ class Motor
     int _motorPin2;
 };
 void manualMovement(int channel2, int channel1, Motor motorLF, Motor motorRF);
-int servoMove(int counter, int currentPos, Servo servoL, Servo servoR);
-int countVar(int channel7, int counter);
+//int servoMove(int counter, int currentPos, Servo servoL, Servo servoR);
+//int countVar(int channel7, int counter);
 #endif
