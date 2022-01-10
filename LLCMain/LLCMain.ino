@@ -16,8 +16,8 @@ int counterClaw = 0;
 int counterGate = 0;
 int gateminLimit = 0;
 int gatemaxLimit = 120;
-int liftminLimit = 100;
-int liftmaxLimit = 170;
+int clawminLimit = 100;
+int clawmaxLimit = 180;
 int gatePos = 0;
 int clawPos = 0;
 // === Sensors ===
@@ -52,13 +52,18 @@ void loop() { //test for now
   printChannels(chout);
   if (chout[5] == -255) { //check channel 6
     //emergency stop (UP)
-    manualMovement(0, 0, motorLF, motorRF);
+    manualMovement(0, 0, motorLF, motorRF,0);
   }
   else if (chout[5] == 0) {
     //manual mode (MIDDLE)
     //use channel 2 for forward/backward and channel 1 for left/right
-    manualMovement(chout[1], chout[0], motorLF, motorRF);
-    counterClaw = countVar(chout[8],counterClaw,liftminLimit, liftmaxLimit,5);
+    if (chout[4]==255){
+      manualMovement(chout[1], chout[0], motorLF, motorRF,1); 
+    }
+    else{
+       manualMovement(chout[1], chout[0], motorLF, motorRF,0.6);
+    }
+    counterClaw = countVar(chout[8],counterClaw,clawminLimit, clawmaxLimit,5);
     counterGate = countVar(chout[7], counterGate, gateminLimit, gatemaxLimit,10);
     clawPos = servoMove(counterClaw, clawPos, servoClaw);
     gatePos = servoMove(counterGate, gatePos, servoGate);
@@ -89,8 +94,9 @@ void loop() { //test for now
   delay(50);
 }
 
-int currentTime = 0;
-int prevTime = 0;
+
+// -----SERVO MOTOR AND DC MOTOR STUFF-----//
+
 
 int countVar(int channel7, int counter, int minLimit, int maxLimit, int spd) {
   int counterL = counter;
@@ -142,8 +148,8 @@ int servoMove(int counter,int currentPos, Servo &servoL) {
 }
 void doubleServo(int channel){
   if(channel==255){
-    servoL.writeMicroseconds(1300);
-    servoR.writeMicroseconds(1700);
+    servoL.writeMicroseconds(1100);
+    servoR.writeMicroseconds(1900);
   }
   else if(channel==0){
     servoL.writeMicroseconds(1500);
