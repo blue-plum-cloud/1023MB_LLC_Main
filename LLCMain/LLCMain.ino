@@ -17,7 +17,7 @@ Servo servoClaw;
 Servo servoGate;
 int counterClaw = 0;
 int counterGate = 0;
-int gateminLimit = 130;
+int gateminLimit = 100;
 int gatemaxLimit = 180;
 int clawminLimit = 100;
 int clawmaxLimit = 180;
