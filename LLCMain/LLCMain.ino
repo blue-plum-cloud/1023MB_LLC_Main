@@ -7,6 +7,9 @@
 //Instantiating objects will also set up the pins for the component.
 Motor motorLF(ENABLEAF, MOTORPIN1_LF, MOTORPIN2_LF, true);
 Motor motorRF(ENABLEBF, MOTORPIN1_RF, MOTORPIN2_RF, true);
+IRLINE IR_left(32);
+IRLINE IR_right(33);
+IRLINE IR_center(25);
 
 Servo servoL;
 Servo servoR;
@@ -14,12 +17,14 @@ Servo servoClaw;
 Servo servoGate;
 int counterClaw = 0;
 int counterGate = 0;
-int gateminLimit = 0;
-int gatemaxLimit = 120;
+int gateminLimit = 130;
+int gatemaxLimit = 180;
 int clawminLimit = 100;
 int clawmaxLimit = 180;
 int gatePos = 0;
 int clawPos = 0;
+int prevTime;
+int clawState = 0;
 // === Sensors ===
 //HCSR04 sensor1(ECHO_PIN,TRIG_PIN);
 //IRLINE sensor2(ECHO_PIN);
@@ -41,30 +46,36 @@ void setup() {
   initializeRC();
   servoL.attach(servoLpin, minUs, maxUs);
   servoR.attach(servoRpin, minUs, maxUs);
-  servoClaw.attach(servoClawpin, min180Us,max180Us);
-  servoGate.attach(servoGatepin, min180Us,max180Us);
+  servoClaw.attach(servoClawpin, min180Us, max180Us);
+  servoGate.attach(servoGatepin, min180Us, max180Us);
+  prevTime = millis();
   colorStarted = colorSen.startColor();
   if (!colorStarted)
     Serial.println("Error starting color sensor...");
 }
-
 void loop() { //test for now
   printChannels(chout);
+  bool clawPress = buttonTimer(chout[8], prevTime);
+  int clawChannel = chout[8];
   if (chout[5] == -255) { //check channel 6
     //emergency stop (UP)
-    manualMovement(0, 0, motorLF, motorRF,0);
+    manualMovement(0, 0, motorLF, motorRF, 0);
   }
   else if (chout[5] == 0) {
     //manual mode (MIDDLE)
     //use channel 2 for forward/backward and channel 1 for left/right
-    if (chout[4]==255){
-      manualMovement(chout[1], chout[0], motorLF, motorRF,1); 
+    if (chout[4] == 255) {
+      manualMovement(chout[1], chout[0], motorLF, motorRF, 1);
     }
-    else{
-       manualMovement(chout[1], chout[0], motorLF, motorRF,0.6);
+    else {
+      manualMovement(chout[1], chout[0], motorLF, motorRF, 0.6);
     }
-    counterClaw = countVar(chout[8],counterClaw,clawminLimit, clawmaxLimit,5);
-    counterGate = countVar(chout[7], counterGate, gateminLimit, gatemaxLimit,10);
+//    checkclawState(clawState, clawPress, chout[8]);
+//    if (clawState == 2 || clawState == 1)
+//      clawChannel = 255;
+ 
+    counterClaw = countVar(clawChannel, counterClaw, clawminLimit, clawmaxLimit, 10);
+    counterGate = countVar(chout[7], counterGate, gateminLimit, gatemaxLimit, 10);
     clawPos = servoMove(counterClaw, clawPos, servoClaw);
     gatePos = servoMove(counterGate, gatePos, servoGate);
     doubleServo(chout[6]);
@@ -122,11 +133,10 @@ int countVar(int channel7, int counter, int minLimit, int maxLimit, int spd) {
   return counterL;
   //  prevTime = currentTime;
 }
-int servoMove(int counter,int currentPos, Servo &servoL) {
+int servoMove(int counter, int currentPos, Servo &servoL) {
   //int pos2 = 180;
   if (currentPos < counter) {
-    for (int pos = currentPos; pos <= counter; pos += 1) { // sweep from 0 degrees to 180 degrees
-      Serial.println("opening");
+    for (int pos = currentPos; pos <= counter; pos += 1) { // sweep from 0 degrees to 180 degrees;
       // in steps of 1 degree
       servoL.write(pos);
       //pos2--;
@@ -146,16 +156,20 @@ int servoMove(int counter,int currentPos, Servo &servoL) {
   return currentPos;
 
 }
-void doubleServo(int channel){
-  if(channel==255){
+void doubleServo(int channel) {
+  Serial.println(channel);
+  if (channel <= -250) {
+    Serial.println("down");
     servoL.writeMicroseconds(1100);
     servoR.writeMicroseconds(1900);
   }
-  else if(channel==0){
-    servoL.writeMicroseconds(1500);
-    servoR.writeMicroseconds(1500);
+  else if (channel < 250 && channel > -250) {
+    Serial.println("stop");
+    servoL.write(90);
+    servoR.write(90);
   }
-  else if(channel==-255){
+  else if (channel >= 250) {
+    Serial.println("up");
     servoL.writeMicroseconds(1700);
     servoR.writeMicroseconds(1300);
   }

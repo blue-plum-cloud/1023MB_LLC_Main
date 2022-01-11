@@ -22,24 +22,36 @@ void printChannels(int chout[]) {
 
   for (byte i = 0; i < 10; i++) {
     chout[i] = readChannel(i, -255, 255, 0);
-//    if (i !=9) {
-//      Serial.print("Ch");
-//      Serial.print(i + 1);
-//      Serial.print(": ");
-//      Serial.print(chout[i]);
-//      Serial.print(" ");
-//    }
-//    else {
-//      Serial.print("Ch");
-//      Serial.print(i + 1);
-//      Serial.print(": ");
-//      Serial.print(chout[i]);
-//      Serial.println(" ");
-//    }
+    //    if (i !=9) {
+    //      Serial.print("Ch");
+    //      Serial.print(i + 1);
+    //      Serial.print(": ");
+    //      Serial.print(chout[i]);
+    //      Serial.print(" ");
+    //    }
+    //    else {
+    //      Serial.print("Ch");
+    //      Serial.print(i + 1);
+    //      Serial.print(": ");
+    //      Serial.print(chout[i]);
+    //      Serial.println(" ");
+    //    }
   }
 }
 void initializeRC() {
   Serial.println("Initializing...");
   ibusRc.begin(ibusRcSerial);
   Serial.println("Initialized!");
+}
+
+bool buttonTimer(int channel, int &prevTime) {
+  if (channel < 255) { //release button
+    prevTime = millis();
+  }
+  else if (channel == 255) {
+    if ((millis() - prevTime) > 1500) {
+      return true;
+    }
+  }
+  return false;
 }

@@ -35,15 +35,15 @@ void manualMovement(int channel2, int channel1, Motor &motorLF, Motor &motorRF, 
   int deadZone = 5;
   if (channel2 == 0 && (channel1 > deadZone || channel1 < deadZone)) { //rotate on spot
     Serial.println("Rotating!");
-    motorLF.rotate(-channel1*multiplier);
-    motorRF.rotate(channel1*multiplier);
+    motorLF.rotate(int(-channel1*multiplier));
+    motorRF.rotate(int(channel1*multiplier));
 
   }
   else if (channel1 == 0 && (channel2 > deadZone || channel2 < deadZone)) { //move forward/backward straight
     if (channel2 < 0) {
       Serial.print(channel2*0.5);
-      motorLF.rotate(channel2*multiplier);
-      motorRF.rotate(channel2*multiplier);
+      motorLF.rotate(int(channel2*multiplier));
+      motorRF.rotate(int(channel2*multiplier));
 
     }
     else {
@@ -69,4 +69,16 @@ void manualMovement(int channel2, int channel1, Motor &motorLF, Motor &motorRF, 
     motorRF.stop_rotate();
 
   }
+}
+
+void checkclawState(int &clawState, bool clawPress, int channel9){
+    if (clawPress == true && clawState == 0) { //open claw
+      clawState = 1;
+    }
+    else if (clawState == 1 && channel9 != 255) { //make sure switch is unpressed first
+      clawState = 2;
+    }
+    else if (clawState == 2 && channel9 == 255){
+      clawState = 0;
+    }
 }

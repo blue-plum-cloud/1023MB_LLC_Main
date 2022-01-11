@@ -15,6 +15,8 @@ class Motor
     int _motorPin2;
 };
 void manualMovement(int channel2, int channel1, Motor &motorLF, Motor &motorRF, int multiplier);
+bool buttonTimer(int channel, int &prevTime);
+void checkclawState(int &clawState, bool clawPress, int channel9);
 //int servoMove(int counter, int currentPos, Servo servoL, Servo servoR);
 //int countVar(int channel7, int counter);
 #endif
