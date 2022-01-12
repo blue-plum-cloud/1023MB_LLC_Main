@@ -7,9 +7,11 @@
 //Instantiating objects will also set up the pins for the component.
 Motor motorLF(ENABLEAF, MOTORPIN1_LF, MOTORPIN2_LF, true);
 Motor motorRF(ENABLEBF, MOTORPIN1_RF, MOTORPIN2_RF, true);
-IRLINE IR_left(32);
-IRLINE IR_right(33);
-IRLINE IR_center(25);
+bool left = true;
+bool auto_state = true;
+//IRLINE IR_left(32);
+//IRLINE IR_right(33);
+//IRLINE IR_center(25);
 
 Servo servoL;
 Servo servoR;
@@ -17,8 +19,8 @@ Servo servoClaw;
 Servo servoGate;
 int counterClaw = 0;
 int counterGate = 0;
-int gateminLimit = 100;
-int gatemaxLimit = 180;
+int gateminLimit = 40;
+int gatemaxLimit = 150;
 int clawminLimit = 100;
 int clawmaxLimit = 180;
 int gatePos = 0;
@@ -57,24 +59,26 @@ void loop() { //test for now
   printChannels(chout);
   bool clawPress = buttonTimer(chout[8], prevTime);
   int clawChannel = chout[8];
+  if (chout[4] == 255)
+    left = true;
+  else
+    left = false;
+
   if (chout[5] == -255) { //check channel 6
     //emergency stop (UP)
     manualMovement(0, 0, motorLF, motorRF, 0);
+    auto_state = true;
   }
   else if (chout[5] == 0) {
     //manual mode (MIDDLE)
     //use channel 2 for forward/backward and channel 1 for left/right
-    if (chout[4] == 255) {
-      manualMovement(chout[1], chout[0], motorLF, motorRF, 1);
-    }
-    else {
-      manualMovement(chout[1], chout[0], motorLF, motorRF, 0.6);
-    }
-//    checkclawState(clawState, clawPress, chout[8]);
-//    if (clawState == 2 || clawState == 1)
-//      clawChannel = 255;
- 
-    counterClaw = countVar(clawChannel, counterClaw, clawminLimit, clawmaxLimit, 10);
+
+    manualMovement(chout[1], chout[0], motorLF, motorRF, 1);
+    //    checkclawState(clawState, clawPress, chout[8]);
+    //    if (clawState == 2 || clawState == 1)
+    //      clawChannel = 255;
+
+    counterClaw = countVar(clawChannel, counterClaw, clawminLimit, clawmaxLimit, 20);
     counterGate = countVar(chout[7], counterGate, gateminLimit, gatemaxLimit, 10);
     clawPos = servoMove(counterClaw, clawPos, servoClaw);
     gatePos = servoMove(counterGate, gatePos, servoGate);
@@ -82,6 +86,10 @@ void loop() { //test for now
   }
   else if (chout[5] == 255) {
     //auto mode (DOWN)
+    if (auto_state == true) {
+      auto_mode(left);
+      auto_state = false;
+    }
   }
   //  int spd = map(chout[0], 1000, 2000, -255, 255);
   //  spd = constrain(spd, -255,255);
@@ -160,8 +168,8 @@ void doubleServo(int channel) {
   Serial.println(channel);
   if (channel <= -250) {
     Serial.println("down");
-    servoL.writeMicroseconds(1100);
-    servoR.writeMicroseconds(1900);
+    servoL.writeMicroseconds(1000);
+    servoR.writeMicroseconds(2000);
   }
   else if (channel < 250 && channel > -250) {
     Serial.println("stop");
@@ -173,4 +181,42 @@ void doubleServo(int channel) {
     servoL.writeMicroseconds(1700);
     servoR.writeMicroseconds(1300);
   }
+}
+int forward_speed = 255;
+int turning_speed = 150;
+int turning_left = 200;
+void auto_mode(bool left) {
+  //go straight
+  motorLF.rotate(forward_speed);
+  motorRF.rotate(forward_speed);
+  delay(1500);
+  //stop
+  motorLF.rotate(0);
+  motorRF.rotate(0);
+  delay(100);
+  //turn
+  if (left) {
+    motorLF.rotate(200);
+    motorRF.rotate(-200);
+  }
+  else {
+    motorLF.rotate(-turning_speed);
+    motorRF.rotate(turning_speed);
+  }
+  delay(1500);
+  //stop
+  motorLF.rotate(0);
+  motorRF.rotate(0);
+  delay(100);
+  motorLF.rotate(forward_speed);
+  motorRF.rotate(forward_speed);
+  delay(2000);
+  motorLF.rotate(0);
+  motorRF.rotate(0);
+  delay(100);
+  motorLF.rotate(-forward_speed);
+  motorRF.rotate(-forward_speed);
+  delay(2000);
+  motorLF.rotate(0);
+  motorRF.rotate(0);
 }
