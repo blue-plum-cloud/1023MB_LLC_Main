@@ -183,8 +183,8 @@ void doubleServo(int channel) {
   }
 }
 int forward_speed = 255;
-int turning_speed = 150;
-int turning_left = 200;
+int turning_speed = 180;
+int turning_left = 180;
 void auto_mode(bool left) {
   //go straight
   motorLF.rotate(forward_speed);
@@ -195,11 +195,11 @@ void auto_mode(bool left) {
   motorRF.rotate(0);
   delay(100);
   //turn
-  if (left) {
-    motorLF.rotate(200);
-    motorRF.rotate(-200);
+  if (left) { // i may have mixed up left and right. but this one is swA up
+    motorLF.rotate(turning_left);
+    motorRF.rotate(-turning_left);
   }
-  else {
+  else { // this is swA down
     motorLF.rotate(-turning_speed);
     motorRF.rotate(turning_speed);
   }
