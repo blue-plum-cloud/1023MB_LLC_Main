@@ -184,7 +184,7 @@ void doubleServo(int channel) {
 }
 int forward_speed = 200;
 int turning_right = 200;
-int turning_left = 150;
+int turning_left = 190;
 void auto_mode(bool left) {
   //go straight
   motorLF.rotate(forward_speed);
