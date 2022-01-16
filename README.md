@@ -7,11 +7,26 @@ good stuff
 
 ## Install Libraries
 
-1. Go to "Manage Libraries" in the Arduino IDE, and download the following libraries:
+1. Go to "Manage Libraries" in the Arduino IDE, and download/install the following libraries:
 - [iBusBM](https://github.com/bmellink/IBusBM)
 - [Arduino_APDS9960](https://github.com/1487quantum/Arduino_APDS9960/), `ESP32` branch
+- [ESP32Servo](https://github.com/madhephaestus/ESP32Servo)
 
 > **Note:** There is a slight modification that is required for the ESP32 to compile the APDS9960 library, comment out the `wire.end();` of `void APDS9960::end()` inside `src/Arduino_APDS9960.cpp`. Alternatively, refer [here](https://github.com/1487quantum/Arduino_APDS9960/blob/esp32/src/Arduino_APDS9960.cpp#L80).
+
+## Components
+
+| **Hardware**                        | **Actuators**                     | **Power**                         | **Electronics**                       |
+| ----------------------------------- | --------------------------------- | --------------------------------- | ------------------------------------- |
+| 3D printed parts                    | 12V motors x 4                    | Baseus 65W 20000mAh Powerbank x 1 | ESP32 devkitc 38 pins x 1             |
+| MakerBeam Starter Kit               | Servomotor 360 (Arm) x 2          | USB C to DC output ZY12PDN x 1    | Flysky FS-i6S 10ch 2.4GHz x 1         |
+| 2020 Aluminum Extrusion (200mm) x 4 | MG996 Servo 180 (Claw + Gate) x 2 |                                   | L298N Motor Driver x 1                |
+| M3/M5 Nuts & Screws                 |                                   |                                   | 2 Pin Electrical Cable Connectors x 2 |
+| Rubber wheels x 4                   |                                   |                                   |                                       |
+
+## Schematics
+
+![](./assets/sch.jpg)
 
 ## Set Up ESP32
 
