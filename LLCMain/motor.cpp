@@ -31,7 +31,7 @@ void Motor::stop_rotate() {
 
 //might want to consider some kind of deadzone for the controller for this movement
 void manualMovement(int channel2, int channel1, Motor &motorLF, Motor &motorRF, int multiplier) { //channel2 is left U/D, channel 1 is right L/R
-  int turningMultiplier = 0.0; //how responsive should the turning be?
+  int turningMultiplier = 0; //how responsive should the turning be?
   int deadZone = 10;
   if (channel2 == 0 && (channel1 > deadZone || channel1 < deadZone)) { //rotate on spot
     Serial.println("Rotating!");
